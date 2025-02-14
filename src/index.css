@@ -1,0 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1, h2, .pastry-font {
+    font-family: 'Pacifico', cursive;
+  }
+}
+
+@keyframes bounce-diagonal {
+  from {
+    transform: translate(var(--x), var(--y));
+  }
+  to {
+    transform: translate(
+      calc(var(--x) + var(--dx) * var(--speed)),
+      calc(var(--y) + var(--dy) * var(--speed))
+    );
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotateY(180deg);
+  }
+  100% {
+    transform: translateY(0px) rotateY(360deg);
+  }
+}
+
+@keyframes lift-lid {
+  0% {
+    transform: rotateX(0);
+  }
+  100% {
+    transform: rotateX(-110deg);
+  }
+}
+
+@keyframes ticket-rise {
+  0% {
+    transform: translateY(100px) rotateX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(-20px) rotateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes glitter {
+  0%, 100% { 
+    text-shadow: 
+      0 0 4px rgba(255,105,180,0.3),
+      0 0 8px rgba(255,105,180,0.3),
+      0 0 12px rgba(255,105,180,0.3);
+  }
+  50% { 
+    text-shadow: 
+      0 0 20px rgba(255,105,180,0.8),
+      0 0 30px rgba(255,105,180,0.8),
+      0 0 40px rgba(255,105,180,0.8);
+  }
+}
+
+@keyframes bounce-text {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.1); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.float {
+  animation: float 4s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+.gradient-text {
+  background: linear-gradient(45deg, #ff69b4, #ff1493);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.glitter-effect {
+  animation: glitter 2s ease-in-out infinite;
+}
+
+.bounce-text {
+  display: inline-block;
+  animation: bounce-text 2s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.menu-item {
+  position: relative;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(45deg, rgba(255, 192, 203, 0.1), rgba(255, 105, 180, 0.1));
+  transition: all 0.3s ease;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem;
+  padding: 2px;
+  background: linear-gradient(45deg, #ff69b4, #ff1493);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.menu-item:hover::before {
+  opacity: 1;
+}
+
+.menu-item:hover {
+  transform: translateX(10px);
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+.heartbeat {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.bouncing-heart {
+  position: fixed;
+  pointer-events: none;
+  z-index: 50;
+  animation: bounce-diagonal linear infinite;
+  animation-duration: calc(var(--speed) * 1s);
+}
+
+.gift-box {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.3s ease;
+}
+
+.gift-box:hover {
+  transform: scale(1.05);
+}
+
+.gift-lid {
+  transform-origin: top;
+  transition: transform 0.6s ease-in-out;
+  transform: rotateX(0);
+}
+
+.gift-box.open .gift-lid {
+  animation: lift-lid 0.6s ease-in-out forwards;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
