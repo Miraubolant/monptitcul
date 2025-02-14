@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Heart, Stars, MapPin, UtensilsCrossed, Sparkles, Timer, Wine, Soup, Gift, X } from 'lucide-react';
+import { Heart, Stars, MapPin, UtensilsCrossed, Sparkles, Timer, Wine, Soup, Gift, X, Rss as Kiss } from 'lucide-react';
 
 const sweetMessages = [
   "J'aime te regarder manger",
@@ -107,6 +107,14 @@ function App() {
   const [hoveredImage, setHoveredImage] = useState<number | null>(null);
   const [isGiftOpen, setIsGiftOpen] = useState(false);
   const [showTicket, setShowTicket] = useState(false);
+  const [showGoodbye, setShowGoodbye] = useState(false);
+  const { ref: footerRef, inView: footerInView } = useInView({ threshold: 0.5 });
+
+  useEffect(() => {
+    if (footerInView) {
+      setTimeout(() => setShowGoodbye(true), 1000);
+    }
+  }, [footerInView]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -247,6 +255,102 @@ function App() {
           </motion.h2>
         </motion.div>
       </section>
+
+      {/* Gift Section */}
+      <motion.div
+        ref={excitedMessageRef}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={excitedMessageInView ? {
+          opacity: 1,
+          scale: 1,
+          transition: {
+            type: "spring",
+            stiffness: 200,
+            damping: 20
+          }
+        } : {}}
+        className="text-center py-20"
+      >
+        <div 
+          className={`gift-box relative w-64 h-64 mx-auto cursor-pointer ${isGiftOpen ? 'open' : ''}`}
+          onClick={() => {
+            if (!isGiftOpen) {
+              setIsGiftOpen(true);
+              setTimeout(() => setShowTicket(true), 800);
+            }
+          }}
+        >
+          {/* Gift Lid */}
+          <div className="gift-lid absolute top-0 left-0 w-full h-1/3 bg-pink-500 rounded-t-lg z-20">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <Gift className="w-12 h-12 text-white" />
+            </div>
+          </div>
+
+          {/* Gift Box */}
+          <div className="absolute bottom-0 left-0 w-full h-2/3 bg-pink-400 rounded-b-lg">
+            {/* Ribbon */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-full bg-pink-600"></div>
+            <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-full h-8 bg-pink-600"></div>
+          </div>
+
+          {/* Close Button */}
+          {isGiftOpen && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute top-[-2rem] right-[-2rem] z-30 bg-pink-500 rounded-full p-2 text-white hover:bg-pink-600 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsGiftOpen(false);
+                setShowTicket(false);
+              }}
+            >
+              <X size={20} />
+            </motion.button>
+          )}
+        </div>
+
+        {/* Ticket Modal */}
+        <AnimatePresence>
+          {showTicket && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+              onClick={() => setShowTicket(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.5, opacity: 0 }}
+                className="bg-white rounded-xl p-8 shadow-2xl transform-gpu"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="relative">
+                  <button
+                    className="absolute top-[-1rem] right-[-1rem] bg-pink-500 rounded-full p-2 text-white hover:bg-pink-600 transition-colors"
+                    onClick={() => setShowTicket(false)}
+                  >
+                    <X size={20} />
+                  </button>
+                  <div className="border-4 border-pink-500 border-dashed rounded-lg p-8 min-w-[300px]">
+                    <div className="text-center">
+                      <h3 className="text-3xl font-bold text-pink-500 pastry-font mb-4">BON POUR</h3>
+                      <p className="text-xl text-gray-700 mb-2">1 Séance de</p>
+                      <p className="text-3xl font-bold text-pink-500 pastry-font">Jambes en l'Air</p>
+                      <div className="mt-6 flex justify-center">
+                        <Heart className="text-pink-500 w-8 h-8" fill="currentColor" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
       {/* Photos Title */}
       <div className="container mx-auto px-4" ref={photosTitleRef}>
@@ -433,115 +537,8 @@ function App() {
         </motion.div>
       </section>
 
-      {/* Gift Section */}
-      <motion.div
-        ref={excitedMessageRef}
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={excitedMessageInView ? {
-          opacity: 1,
-          scale: 1,
-          transition: {
-            type: "spring",
-            stiffness: 200,
-            damping: 20
-          }
-        } : {}}
-        className="text-center py-20"
-      >
-        <div 
-          className={`gift-box relative w-64 h-64 mx-auto cursor-pointer ${isGiftOpen ? 'open' : ''}`}
-          onClick={() => {
-            if (!isGiftOpen) {
-              setIsGiftOpen(true);
-              setTimeout(() => setShowTicket(true), 800);
-            }
-          }}
-        >
-          {/* Gift Lid */}
-          <div className="gift-lid absolute top-0 left-0 w-full h-1/3 bg-pink-500 rounded-t-lg z-20">
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <Gift className="w-12 h-12 text-white" />
-            </div>
-          </div>
-
-          {/* Gift Box */}
-          <div className="absolute bottom-0 left-0 w-full h-2/3 bg-pink-400 rounded-b-lg">
-            {/* Ribbon */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-full bg-pink-600"></div>
-            <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-full h-8 bg-pink-600"></div>
-          </div>
-
-          {/* Close Button */}
-          {isGiftOpen && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="absolute top-[-2rem] right-[-2rem] z-30 bg-pink-500 rounded-full p-2 text-white hover:bg-pink-600 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsGiftOpen(false);
-                setShowTicket(false);
-              }}
-            >
-              <X size={20} />
-            </motion.button>
-          )}
-        </div>
-
-        {/* Ticket Modal */}
-        <AnimatePresence>
-          {showTicket && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-              onClick={() => setShowTicket(false)}
-            >
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.5, opacity: 0 }}
-                className="bg-white rounded-xl p-8 shadow-2xl transform-gpu"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="relative">
-                  <button
-                    className="absolute top-[-1rem] right-[-1rem] bg-pink-500 rounded-full p-2 text-white hover:bg-pink-600 transition-colors"
-                    onClick={() => setShowTicket(false)}
-                  >
-                    <X size={20} />
-                  </button>
-                  <div className="border-4 border-pink-500 border-dashed rounded-lg p-8 min-w-[300px]">
-                    <div className="text-center">
-                      <h3 className="text-3xl font-bold text-pink-500 pastry-font mb-4">BON POUR</h3>
-                      <p className="text-xl text-gray-700 mb-2">1 Séance de</p>
-                      <p className="text-3xl font-bold text-pink-500 pastry-font">Jambes en l'Air</p>
-                      <div className="mt-6 flex justify-center">
-                        <Heart className="text-pink-500 w-8 h-8" fill="currentColor" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-
-      {/* Self Destruct Timer */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="fixed bottom-4 right-4 bg-black/80 text-white px-6 py-3 rounded-full backdrop-blur-sm shadow-lg flex items-center gap-3 z-50"
-      >
-        <Timer className="text-red-500 animate-pulse" />
-        <span className="font-mono">Auto-destruction du site dans {formatTime(timeLeft)}</span>
-      </motion.div>
-
       {/* Footer */}
-      <footer className="bg-white/80 backdrop-blur-md py-8">
+      <footer ref={footerRef} className="bg-white/80 backdrop-blur-md py-8">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -561,6 +558,90 @@ function App() {
           </motion.div>
         </div>
       </footer>
+
+      {/* Floating Kisses Animation */}
+      <AnimatePresence>
+        {showGoodbye && (
+          <>
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={`kiss-${i}`}
+                initial={{
+                  opacity: 0,
+                  x: Math.random() * window.innerWidth,
+                  y: window.innerHeight + 100
+                }}
+                animate={{
+                  opacity: [0, 1, 0],
+                  x: Math.random() * window.innerWidth,
+                  y: -100,
+                  scale: [0.5, 1.5, 0.5]
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 2,
+                  delay: i * 0.2,
+                  repeat: Infinity,
+                  repeatDelay: Math.random() * 2
+                }}
+                className="fixed pointer-events-none z-50"
+              >
+                <Kiss className="text-pink-500 w-8 h-8" fill="currentColor" />
+              </motion.div>
+            ))}
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Goodbye Popup */}
+      <AnimatePresence>
+        {showGoodbye && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.5, opacity: 0 }}
+              className="bg-white rounded-3xl p-12 shadow-2xl transform-gpu max-w-lg w-full mx-4"
+            >
+              <div className="text-center space-y-6">
+                <motion.div
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 10, -10, 0]
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                >
+                  <Kiss className="w-20 h-20 text-pink-500 mx-auto" fill="currentColor" />
+                </motion.div>
+                <h2 className="text-4xl font-bold pastry-font text-pink-500">À ce soir mon ptit cul</h2>
+                <p className="text-xl text-gray-600">Je t'aime fort fort fort ❤️</p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-pink-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-pink-600 transition-colors"
+                  onClick={() => setShowGoodbye(false)}
+                >
+                  Bisous 😘
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Self Destruct Timer */}
+      <motion.div className="fixed bottom-4 right-4 bg-black/80 text-white px-6 py-3 rounded-full backdrop-blur-sm shadow-lg flex items-center gap-3 z-50">
+        <Timer className="text-red-500 animate-pulse" />
+        <span className="font-mono">Auto-destruction du site dans {formatTime(timeLeft)}</span>
+      </motion.div>
     </div>
   );
 }
